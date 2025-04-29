@@ -1,21 +1,37 @@
 package com.devsuperior.dsmeta.repositories;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.devsuperior.dsmeta.dto.SaleMinDTO;
+import com.devsuperior.dsmeta.dto.ReportMinDTO;
 import com.devsuperior.dsmeta.entities.Sale;
 
 public interface SaleRepository extends JpaRepository<Sale, Long> {
 
-	@Query("SELECT new com.devsuperior.dsmeta.dto.SaleMinDTO(obj) "
-		 + "  FROM Sale obj"
-		 + " WHERE UPPER(obj.name) LIKE UPPER(CONCAT('%', :name, '%'))"
-	     + "   AND obj.date BETWEEN :checkedMinDate AND :checkedMaxDate")
-	Optional<SaleMinDTO> searchByParams(LocalDate checkedMinDate, LocalDate checkedMaxDate, String name, Pageable pageable);
+	@Query("SELECT new com.devsuperior.dsmeta.dto.ReportMinDTO(obj)"
+		    + "  FROM Sale obj"
+		    + " WHERE UPPER(obj.seller.name) LIKE UPPER(CONCAT('%', :name, '%'))"
+	        + "   AND obj.date BETWEEN :checkedMinDate AND :checkedMaxDate")
+	Page<ReportMinDTO> searchReportByParams(LocalDate checkedMinDate, LocalDate checkedMaxDate, String name, Pageable pageable);
+	
+	
+	
+//	@Query(nativeQuery = true, value = 
+//			  "SELECT tb_sales.id"
+//   	        + "     , tb_sales.visited"
+//   	        + "     , tb_sales.deals"
+//   	        + "     , tb_sales.amount"
+//   	        + "     , tb_sales.date"
+//			+ "     , tb_sales.seller_id"
+//			+ "     , tb_seller.name"
+//		    + "  FROM tb_sales"
+//		    + " JOIN FETCH tb_seller ON tb_sales.seller_id = tb_seller.id"
+//		    + " WHERE UPPER(tb_seller.name) LIKE UPPER(CONCAT('%', :name, '%'))"
+//	        + "   AND tb_sales.date BETWEEN :checkedMinDate AND :checkedMaxDate")
+//	Page<Sale> searchReportByParams(LocalDate checkedMinDate, LocalDate checkedMaxDate, String name, Pageable pageable);
 
 }

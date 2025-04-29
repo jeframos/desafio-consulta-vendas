@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.devsuperior.dsmeta.dto.ReportMinDTO;
 import com.devsuperior.dsmeta.dto.SaleMinDTO;
 import com.devsuperior.dsmeta.entities.Sale;
 import com.devsuperior.dsmeta.repositories.SaleRepository;
@@ -26,15 +27,31 @@ public class SaleService {
 		return new SaleMinDTO(entity);
 	}
 
-	public Page<SaleMinDTO> findAll(String minDate, String maxDate, String name, Pageable pageable) {
+public Page<ReportMinDTO> searchReport(String minDate, String maxDate, String name, Pageable pageable) {
+		
 		LocalDate checkedMaxDate = checkDate(maxDate, 
 				LocalDate.ofInstant(Instant.now(), ZoneId.systemDefault()));
 		
 		LocalDate checkedMinDate = checkDate(minDate, checkedMaxDate.minusYears(1L));
 		
-		Optional<SaleMinDTO> result = repository.searchByParams(checkedMinDate, checkedMaxDate, name, pageable);
-		return null;
+		return repository.searchReportByParams(checkedMinDate, checkedMaxDate, name, pageable);
 	}
+	
+	
+	/*
+	 * public Page<ReportMinDTO> searchReport(String minDate, String maxDate, String
+	 * name, Pageable pageable) {
+	 * 
+	 * LocalDate checkedMaxDate = checkDate(maxDate,
+	 * LocalDate.ofInstant(Instant.now(), ZoneId.systemDefault()));
+	 * 
+	 * LocalDate checkedMinDate = checkDate(minDate, checkedMaxDate.minusYears(1L));
+	 * 
+	 * Page<Sale> result = repository.searchReportByParams(checkedMinDate,
+	 * checkedMaxDate, name, pageable);
+	 * 
+	 * return result.map(sale -> new ReportMinDTO(sale)); }
+	 */
 
 	private LocalDate checkDate(String date, LocalDate localDateDefault) {
 		LocalDate setDate;
