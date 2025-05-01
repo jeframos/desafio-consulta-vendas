@@ -34,7 +34,12 @@ public Page<ReportMinDTO> searchReport(String minDate, String maxDate, String na
 		
 		LocalDate checkedMinDate = checkDate(minDate, checkedMaxDate.minusYears(1L));
 		
-		return repository.searchReportByParams(checkedMinDate, checkedMaxDate, name, pageable);
+		//return repository.searchReportByParams(checkedMinDate, checkedMaxDate, name, pageable);
+		
+		Page<Sale> result = repository.searchReportByParams(checkedMinDate,
+				  checkedMaxDate, name, pageable);
+				  
+		return result.map(sale -> new ReportMinDTO(sale));
 	}
 	
 	
